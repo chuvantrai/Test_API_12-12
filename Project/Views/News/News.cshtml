@@ -1,0 +1,37 @@
+﻿@using Project.Models
+@*
+	For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	ViewBag.Title = "Tin Tức Bất động sản Nha Trang";
+	Layout = "~/Views/_Layout.cshtml";
+	News news = ViewBag.News;
+	List<News> ListNews = ViewBag.ListNews;
+	
+}
+
+<link rel="stylesheet" href="~/css/News.css">
+
+<div class="container" style="margin-top:30px; ">
+	<div class="row">
+		<div class="col-sm-8 chitiet">
+			<h2>@news.Title</h2>
+			<p>ngày: @news.DateUp.Day/@news.DateUp.Month/@news.DateUp.Year</p>
+			<p>@Html.Raw(news.Content)</p>
+			
+		</div>
+
+		<div class="col-sm-4 shadow-none p-3 mb-5 bg-light rounded chitiet2">
+			<h2>Các tin đang hot</h2>
+			@foreach (News n in ListNews) {
+				<div class="shadow-sm p-3 mb-5 bg-white rounded">
+					<a href="/tintuc?id=@n.NewsId" class="text-decoration-none">
+						<img src="~/myfiles/@n.ImgAvar" alt="">
+						<h5>@n.Title</h5>
+						<p><ion-icon name="calendar-outline"></ion-icon>@n.DateUp.Day/@n.DateUp.Month/@n.DateUp.Year</p>
+					</a>
+				</div>
+			}
+		</div>
+	</div>
+</div>

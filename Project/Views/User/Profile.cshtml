@@ -1,0 +1,186 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@using Project.Models
+
+@{
+	ViewBag.Title = "Thông tin cá nhân";
+	Layout = "~/Views/_Layout.cshtml";
+	string jsonStr = Context.Session.GetString("useraccount");
+	User u = null;
+	if (jsonStr != null) u = JsonConvert.DeserializeObject<User>(jsonStr);
+	string chnam = "";
+	string chnu = "";
+	@if (u.Gender == true) { chnam = "checked"; }
+	@if (u.Gender == false) { chnu = "checked"; }
+}
+
+<style>
+	body {
+		background: #f7f7ff;
+	}
+
+	.card {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		word-wrap: break-word;
+		background-color: #fff;
+		background-clip: border-box;
+		border: 0 solid transparent;
+		border-radius: .25rem;
+		margin-bottom: 1.5rem;
+		box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
+	}
+
+	.me-2 {
+		margin-right: .5rem !important;
+	}
+</style>
+<form enctype="multipart/form-data" action="/nguoidung/DoThongtincanhan" method="post">
+	@if (ViewBag.thongbao != null)
+	{
+		<div class="container">
+			<div class="row"><br></div>
+			<div class="row">
+				<div class="col">
+				</div>
+				<div class="col-8">
+					<div class="alert alert-info alert-dismissible fade show" id='tempAlert' role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong>Thông báo</strong> @ViewBag.thongbao
+					</div>
+				</div>
+				<div class="col">
+				</div>
+			</div>
+		</div>
+	}
+	<div class="container" style="margin-top: 20px;">
+		<div class="main-body">
+			<div class="row">
+				<div class="col-lg-4">
+					<div class="card">
+						<div class="card-body">
+							<div class="d-flex flex-column align-items-center text-center">
+								@if (u.ImgAvar == null)
+								{
+									<img src="~/images/avatar7.png" alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
+								}
+								@if (u.ImgAvar != null)
+								{
+									<img src="~/myfiles/@u.ImgAvar" alt="Admin" class="rounded-circle p-1 bg-primary" width="110" height="110">
+								}
+								<div class="mt-3">
+									<h4>@u.FullName</h4>
+									<input type="file" name="myfile" accept=".jpg, .jpeg, .png" id="inputImage" />
+								</div>
+							</div>
+							<hr class="my-4">
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-8">
+					<div class="card">
+						<div class="card-body">
+							<div class="row mb-3">
+								<div class="col-sm-3">
+									<h6 class="mb-0">Họ và Tên</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<input name="fullname" type="text" class="form-control" value="@u.FullName" maxlength="40" required>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-sm-3">
+									<h6 class="mb-0">Email</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<input type="text" class="form-control" value="@u.Email" disabled>
+									<input name="email" type="hidden" value="@u.Email">
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-sm-3">
+									<h6 class="mb-0">Số điện thoại</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<input name="phone" type="text" class="form-control" pattern="(0)+([0-9]{9})\b" value="@u.Phone" required>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-sm-3">
+									<h6 class="mb-0">Ngày sinh</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<input name="dob" type="date" value="@String.Format("{0:yyyy-MM-dd}", u.Dob)" required>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-sm-3">
+									<h6 class="mb-0">Giới tính</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="radio" name="gender" id="inlineRadio1" value="True" @chnam>
+										<label class="form-check-label" for="inlineRadio1">Nam</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="radio" name="gender" id="inlineRadio2" value="False" @chnu>
+										<label class="form-check-label" for="inlineRadio2">Nữ</label>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-3"></div>
+								<div class="col-sm-9 text-secondary">
+									<input type="button" class="btn btn-primary px-4" value="Lưu" data-toggle="modal" data-target="#exampleModal">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						Bạn có chắc muốn thay đổi thông tin không?
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+						<button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<script>
+	const input = document.getElementById('inputImage')
+	input.addEventListener('change', (event) => {
+		const target = event.target
+		if (target.files && target.files[0]) {
+
+			/*Maximum allowed size in bytes
+			 5MB Example
+			 Change first operand(multiplier) for your needs*/
+			const maxAllowedSize = 10 * 1024 * 1024; //10MB
+			if (target.files[0].size > maxAllowedSize) {
+				// Here you can ask your users to load correct file
+				target.value = ''
+			}
+		}
+	})
+</script>

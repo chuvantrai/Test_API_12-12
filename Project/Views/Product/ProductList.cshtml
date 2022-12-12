@@ -1,0 +1,258 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@using Project.Models
+@*
+	For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	ViewBag.Title = "Bất động sản Nha Trang";
+	Layout = "~/Views/_Layout.cshtml";
+	List<Category> listcate = ViewBag.ListCate;
+	List<Regional> listregi = ViewBag.ListRegi;
+	int cate = ViewBag.Cate;
+	int regi = ViewBag.Regi;
+	List<Product> ListPro= ViewBag.ListPro;
+}
+
+@{
+	List<Product> NewsList = ViewBag.ProductList;
+	string jsonStr = Context.Session.GetString("useraccount");
+	User user = null;
+	if (jsonStr != null) user = JsonConvert.DeserializeObject<User>(jsonStr);
+}
+<link href="~/css/Product.css" rel="stylesheet" type="text/css" />
+<script>
+            function submitData()
+            {
+                document.getElementById("searchFrm").submit();
+            }
+
+</script>
+<div class="wrapper">
+	<form action="/batdongsan" method="GET" id="searchFrm" onchange="submitData();">
+		<div class="d-lg-flex align-items-lg-center pt-2">
+			<div class="form-inline d-flex align-items-center my-2 mr-lg-2 radio bg-light border">
+				@foreach (Category c in listcate)
+				{
+					@if (cate == @c.CategoryId)
+					{
+						<label class="options">@c.CategoryName <input type="radio" name="category" value="@c.CategoryId" checked> <span class="checkmark"></span> </label>
+					}
+					else
+					{
+						<label class="options">@c.CategoryName <input type="radio" name="category" value="@c.CategoryId"> <span class="checkmark"></span> </label>
+					}
+				}
+				@if (cate == 0)
+				{
+					<label class="options">Tất cả <input type="radio" name="category" value="0" checked> <span class="checkmark"></span> </label>
+				}
+				else
+				{
+					<label class="options">Tất cả <input type="radio" name="category" value="0"> <span class="checkmark"></span> </label>
+				}
+			</div>
+			<div class="form-inline d-flex align-items-center my-2 checkbox bg-light border mx-lg-2">
+				<label>
+					Sắp xếp
+				</label>
+				<select name="sort" id="country" class="bg-light" onchange="this.form.submit()">
+					@if (ViewBag.sort == "desdate"||ViewBag.sort ==""){<option value="desdate" selected>Mới nhất</option>}else{<option value="desdate">Mới nhất</option>}
+					@if (ViewBag.sort == "asedate"){<option value="asedate" selected>Cũ-mới</option>}else{<option value="asedate">Cũ-mới</option>}
+					@if (ViewBag.sort == "aseprice"){<option value="aseprice" selected>Giá từ thấp tới cao</option>}else{<option value="aseprice">Giá từ thấp tới cao</option>}
+					@if (ViewBag.sort == "desprice"){<option value="desprice" selected>Giá từ cao tới thấp</option>}else{<option value="desprice">Giá từ cao tới thấp</option>}
+				</select>
+			</div>
+
+		</div>
+		<section id="sidebar">
+			<div class="py-3">
+				<h5 class="font-weight-bold">Khu vực BDS</h5>
+				<ul class="list-group">
+					<label class="options">Tất cả <input type="radio" name="regional" value="" checked=""> <span class="checkmark"></span> </label>
+					@foreach (Regional r in listregi)
+					{
+						@if (regi == @r.RegionalId)
+						{
+							<label class="options">@r.RegionalName <input type="radio" name="regional" value="@r.RegionalId" checked=""> <span class="checkmark"></span> </label>
+						}
+						else
+						{
+							<label class="options">@r.RegionalName <input type="radio" name="regional" value="@r.RegionalId"> <span class="checkmark"></span> </label>
+						}
+					}
+				</ul>
+			</div>
+			<div class="py-3">
+				<h5 class="font-weight-bold">Mức giá</h5>
+				<ul class="list-group">
+					@if ("" == @ViewBag.price||@ViewBag.price==null)
+					{ <label class="options">Tất cả <input type="radio" name="price" value="" checked>  <span class="checkmark"></span> </label>}
+					else{<label class="options">Tất cả <input type="radio" name="price" value="" >  <span class="checkmark"></span> </label>}
+					@if ("<500" == @ViewBag.price)
+					{<label class="options">&lt; 500 triệu <input type="radio" name="price" value="<500" checked> <span class="checkmark"></span> </label> }
+					else{<label class="options">&lt; 500 triệu <input type="radio" name="price" value="<500"> <span class="checkmark"></span> </label>}
+					@if ("500-800" == @ViewBag.price)
+					{ <label class="options">500 - 800 triệu <input type="radio" name="price" value="500-800" checked> <span class="checkmark"></span> </label>}
+					else{<label class="options">500 - 800 triệu <input type="radio" name="price" value="500-800"> <span class="checkmark"></span> </label>}
+					@if ("800-1t" == @ViewBag.price)
+					{<label class="options">800 triệu - 1 tỷ <input type="radio" name="price" value="800-1t" checked> <span class="checkmark"></span> </label>}
+					else{<label class="options">800 triệu - 1 tỷ <input type="radio" name="price" value="800-1t"> <span class="checkmark"></span> </label>}
+					@if ("1-3t" == @ViewBag.price)
+					{ <label class="options">1 - 3 tỷ <input type="radio" name="price" value="1-3t" checked> <span class="checkmark"></span> </label>}
+					else{<label class="options">1 - 3 tỷ <input type="radio" name="price" value="1-3t"> <span class="checkmark"></span> </label>}
+					@if ("3-7t" == @ViewBag.price)
+					{ <label class="options">3 - 7 tỷ <input type="radio" name="price" value="3-7t" checked> <span class="checkmark"></span> </label>}
+					else{<label class="options">3 - 7 tỷ <input type="radio" name="price" value="3-7t"> <span class="checkmark"></span> </label>}
+					@if ("7-10t" == @ViewBag.price)
+					{<label class="options">7 - 10 tỷ <input type="radio" name="price" value="7-10t" checked> <span class="checkmark"></span> </label> }
+					else{<label class="options">7 - 10 tỷ <input type="radio" name="price" value="7-10t"> <span class="checkmark"></span> </label>}
+					@if ("10-20t" == @ViewBag.price)
+					{<label class="options">10 - 20 tỷ <input type="radio" name="price" value="10-20t" checked> <span class="checkmark"></span> </label> }
+					else{<label class="options">10 - 20 tỷ <input type="radio" name="price" value="10-20t"> <span class="checkmark"></span> </label>}
+					@if (">20t" == @ViewBag.price)
+					{<label class="options">≥ 20 tỷ<input type="radio" name="price" value=">20t" checked> <span class="checkmark"></span> </label> }
+					else{<label class="options">≥ 20 tỷ<input type="radio" name="price" value=">20t"> <span class="checkmark"></span> </label>}
+				</ul>
+			</div>
+
+		</section> <!-- Products Section -->
+
+	</form>
+	<div class="col-mb-12">
+		<section id="products">
+			<div class="container py-3">
+				<div class="row">
+					@foreach (Product p in ListPro)
+				   {
+					   <div class="col-lg-4  col-sm-10 offset-md-0 offset-sm-1 pt-md-0  sanpham1">
+						<div class="card">
+							<img class="card-img-top" src="~/myfiles/@p.ImgAvar">
+							<div class="card-body" style="height: 185px;">
+								<i class="bi bi-star-fill" style="color: #feba45"></i> <i class="bi bi-star-fill" style="color: #feba45"></i> <i class="bi bi-star-fill" style="color: #feba45"></i> <i class="bi bi-star-fill" style="color: #feba45"></i> <i class="bi bi-star-fill" style="color: #feba45"></i>
+								<span style="color: #aaa;float: right; font-size: 14px"><i class="bi bi-geo-alt-fill"></i> @p.Regional.RegionalName </span>
+								<h6 class="font-weight-bold pt-1">
+									<div style="height: 58px;overflow:hidden;">
+										#@p.ProductId.@p.ProductName
+									</div>
+								</h6>
+								<div class="d-flex align-items-center product"> <span class="fas fa-star"></span> <span class="fas fa-star"></span> <span class="fas fa-star"></span> <span class="fas fa-star"></span> <span class="far fa-star"></span> </div>
+								<div class="d-flex align-items-center justify-content-between pt-3">
+									<div class="d-flex flex-column">
+										<div class="h6 font-weight-bold">@p.LetterPrice <i class="bi bi-cash-coin" style="color: #49be25"></i></div>
+
+									</div>
+									<a href="/batdongsan/chitiet?id=@p.ProductId" style="text-decoration: none;"><div class="btn btn-outline-primary">Xem</div></a>
+
+									@if( user!=null&&user.RoleId==1){
+									<a style="text-decoration: none;" data-toggle="modal" data-target="#exampleModal_@p.ProductId" class="btn btn-outline-danger"><i class="bi bi-trash3-fill"></i></a>
+									
+									<a href="/batdongsanadmin/chinhsuabds?id=@p.ProductId" style="text-decoration: none;" class="btn btn-outline-success"><i class="bi bi-pencil-square"></i></a>
+									}
+									
+								</div>
+							</div>
+						</div>
+					</div>
+					@*xóa*@
+					<form method="post" action="/batdongsanadmin/Xoabds">
+										<div class="modal-dialog modal-dialog-centered">
+										<div class="modal fade" id="exampleModal_@p.ProductId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+											<div class="modal-dialog">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+															<span aria-hidden="true">&times;</span>
+														</button>
+													</div>
+													<div class="modal-body">
+														Bạn có chắc muốn xóa sản phẩm này không?
+														<input type="text" value="@p.ProductId" name="id" hidden>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+														<button type="submit" class="btn btn-primary">Có</button>
+													</div>
+												</div>
+											</div>
+										</div>
+										</div>
+					</form>
+				   }
+				</div>
+			</div>
+		</section>
+		
+	</div>
+	<!--        </div>-->
+	<nav aria-label="..." style="margin-top: 850px;margin-left: 480px;">
+			<ul class="pagination">
+				@if(ViewBag.PageEnd!=0){
+						@if(ViewBag.PageIndex>2){
+						<li class="page-item">
+							<a class="page-link" href="/batdongsan?Pageindex=1&sort=@ViewBag.sort&category=@ViewBag.Cate&regional=@ViewBag.Regi&price=@ViewBag.price">Đầu</a>
+						</li>
+						}
+						
+						@if (ViewBag.PageIndex !=1){int j =ViewBag.PageIndex-1;
+							<li class="page-item"><a class="page-link" href="/batdongsan?Pageindex=@j&sort=@ViewBag.sort&category=@ViewBag.Cate&regional=@ViewBag.Regi&price=@ViewBag.price">@j</a></li>
+						}
+						
+						<li class="page-item active" aria-current="page">
+							<a class="page-link" href="">@ViewBag.PageIndex</a>
+						</li>
+
+						@if (ViewBag.PageIndex != ViewBag.PageEnd){int i =ViewBag.PageIndex+1;
+							<li class="page-item"><a class="page-link" href="/batdongsan?Pageindex=@i&sort=@ViewBag.sort&category=@ViewBag.Cate&regional=@ViewBag.Regi&price=@ViewBag.price"> @i</a></li>
+						}
+						
+						@if (ViewBag.PageIndex <= ViewBag.PageEnd-1){
+							<li class="page-item">
+								<a class="page-link" href="/batdongsan?Pageindex=@ViewBag.PageEnd&sort=@ViewBag.sort&category=@ViewBag.Cate&regional=@ViewBag.Regi&price=@ViewBag.price">Cuối</a>
+							</li>
+						}
+						}
+			</ul>
+		</nav>
+</div>
+@if(ViewBag.thongbao!=null){
+
+    @*thông báo*@
+        <div class="container thongbao" id="thongbao1" >
+			<div class="row" style="display: block">
+				<div class="col">
+				</div>
+				<div class="col-8">
+					<div class="alert alert-info alert-dismissible fade show" id='tempAlert' role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong> <i class="bi bi-check-circle-fill"></i> </strong> @ViewBag.thongbao
+					</div>
+				</div>
+				<div class="col">
+				</div>
+			</div>
+		</div>
+
+<style>
+.thongbao{
+        text-decoration: none;
+        position: fixed;
+        top:24px;
+        left: 100px;
+        color: #fe9d15;
+        transition: all ease 0.4s;
+        border-radius: 40px;
+        z-index: 999;
+        margin-left: 150px
+}
+</style>
+<script>
+setTimeout(function () {
+    document.getElementById('thongbao1').classList.add("hide");
+    document.getElementById('thongbao1').style.display = 'none';
+}, 4000);
+</script>
+}

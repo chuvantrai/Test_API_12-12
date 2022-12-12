@@ -1,0 +1,202 @@
+﻿@using Project.Models
+@model User
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.Title= "Danh sách người dùng";
+    Layout ="~/Views/_Layout.cshtml";
+    List<User> userlist = ViewBag.UserList;
+
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+<link rel="stylesheet" href="~/css/UserList.css" />
+	@if (ViewBag.thongbao != null)
+	{
+		<div class="container">
+			<div class="row"><br></div>
+			<div class="row">
+				<div class="col">
+				</div>
+				<div class="col-8">
+					<div class="alert alert-info alert-dismissible fade show" id='tempAlert' role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong>Thông báo</strong> @ViewBag.thongbao
+					</div>
+				</div>
+				<div class="col">
+				</div>
+			</div>
+		</div>
+	}
+<div class="container mt-3 mb-4 col-12">
+<div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="user-dashboard-info-box table-responsive mb-0 bg-white p-4 shadow-sm">
+            <form method="get" action="/nguoidungadmin/danhsach"> 
+            <div id="paggertop" class="pagger" style="display:flex;">
+				@*filter*@
+				<select name="sort" class="custom-select col-3" id="inlineFormCustomSelectPref" onchange="this.form.submit()">
+					@if(ViewBag.sort==""){<option value="" selected>Sắp xếp</option>}else{<option value="" >Sắp xếp</option>}
+					@if(ViewBag.sort=="des"){<option value="des" selected>Mới Nhất</option>}else{<option value="des">Mới Nhất</option>}
+					@if(ViewBag.sort=="asc"){<option value="asc" selected>Cũ Nhất</option>}else{<option value="asc">Cũ Nhất</option>}
+				</select>
+                <select name="role" class="custom-select col-3" id="inlineFormCustomSelectPref" onchange="this.form.submit()" style="margin-left: 20px">
+					@if(ViewBag.role==0){<option value="" selected>Vai trò</option>}else{<option value="" >Vai trò</option>}
+					@if(ViewBag.role==1){<option value="1" selected>admin</option>}else{<option value="1">admin</option>}
+					@if(ViewBag.role==2){<option value="2" selected>khách hàng</option>}else{<option value="2">khách hàng</option>}
+				</select>
+				@*seacher*@
+				<div class="input-group mb-3 col-5" style="margin-left: 20px">
+					<input name="search" value="@ViewBag.search" type="text" class="form-control" placeholder="Tìm kiếm">
+					<div class="input-group-append">
+						<button class="btn btn-light" type="submit" style="border: 1px solid #ced4da;"><i class="bi bi-search"></i></button>
+					</div>
+				</div>
+			</div><br>
+            </form>
+          <table class="table manage-candidates-top mb-0">
+            <thead>
+              <tr>
+                <th>Người dùng</th>
+                <th class="text-center">Giới tính</th>
+                <th class="text-center">Vai Trò</th>
+                <th class="action text-right">Cài đặt</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach (User u in userlist)
+             {
+              <tr class="candidates-list">
+                <td class="title">
+                  <div class="thumb">
+                    @if(@u.ImgAvar!=null){<img class="img-fluid" src="~/myfiles/@u.ImgAvar" alt="">}
+                    else{<img class="img-fluid" src="~/images/avatar7.png" alt="">}
+                  </div>
+                  <div class="candidate-list-details">
+                    <div class="candidate-list-info">
+                      <div class="candidate-list-title">
+                        <h5 class="mb-0"><a href="">@u.FullName</a> 
+                            @{int yearold = DateTime.Now.Year - u.Dob.Year;}
+                            <span style="color: #969696;font-size: 15px;">  @yearold tuổi</span>
+                        </h5>
+                      </div>
+                      <div class="candidate-list-option">
+                        <ul class="list-unstyled">
+                          <li><i class="bi bi-telephone-fill"></i>@u.Phone</li>
+                          <li><i class="bi bi-envelope-fill"></i>@u.Email</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td class="candidate-list-favourite-time text-center">
+                  <span class="candidate-list-time order-1">
+                      @if (u.Gender == true) {<i class="bi bi-gender-male" style="color: #007BFF"></i> <span>Nam</span> } 
+                      else{<i class="bi bi-gender-female" style="color: #E64991"></i> <span>Nữ</span>}
+                  </span>
+                </td>
+                <td class="candidate-list-favourite-time text-center">
+                  <span class="candidate-list-time order-1">@if (u.RoleId == 1) { <span>Admin</span> } else{<span>Khách hàng</span>} </span>
+                  </td>
+                <td>
+                  <ul class="list-unstyled mb-0 d-flex justify-content-end">
+                    <li><a href="#" class="text-info" data-toggle="modal" data-target="#exampleModal2_@u.UserId"><i class="bi bi-arrow-repeat" style="font-size: 25px;"></i></a></li>
+						<form method="post" action="/nguoidungadmin/doivaitro?id=@u.UserId">
+							<div class="modal-dialog modal-dialog-centered">
+							<div class="modal fade" id="exampleModal2_@u.UserId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+											chọn vai trò người dùng <br>
+											@if(u.RoleId ==1){
+												<input type="radio" name="roleuser" value="1" checked/> <span > :admin </span>
+												<input type="radio" name="roleuser" value="2" /><span > :khách hàng </span>
+											}else{
+												<input type="radio" name="roleuser" value="1" /> <span > :admin </span>
+												<input type="radio" name="roleuser" value="2" checked/><span > :khách hàng </span>}
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+											<button type="submit" class="btn btn-primary">Lưu</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						</form>
+                    <li style="padding-top: 5px;"><a class="text-danger" title="" data-toggle="modal" data-target="#exampleModal_@u.UserId"><i class="far fa-trash-alt" style="font-size: 25px;"></i></a></li>
+                    	<form method="post" action="/nguoidungadmin/xoanguoidung?id=@u.UserId">
+							<div class="modal-dialog modal-dialog-centered">
+							<div class="modal fade" id="exampleModal_@u.UserId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+											Bạn có chắc muốn xóa người dùng này không?
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+											<button type="submit" class="btn btn-primary">Có</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						</form>
+                  </ul>
+                </td>
+              </tr>
+             }
+              
+            </tbody>
+          </table>
+          <div class="text-center mt-3 mt-sm-3">
+            <ul class="pagination justify-content-center mb-0">
+                        @if(ViewBag.PageEnd!=0){
+						@if(ViewBag.PageIndex>2){
+						<li class="page-item">
+							<a class="page-link" href="/nguoidungadmin/danhsach?Pageindex=1&sort=@ViewBag.sort&search=@ViewBag.search&role=@ViewBag.role">Đầu</a>
+						</li>
+						}
+						
+						@if (ViewBag.PageIndex !=1){int j =ViewBag.PageIndex-1;
+							<li class="page-item"><a class="page-link" href="/nguoidungadmin/danhsach?Pageindex=@j&sort=@ViewBag.sort&search=@ViewBag.search&role=@ViewBag.role">@j</a></li>
+						}
+						
+						<li class="page-item active" aria-current="page">
+							<a class="page-link" href="">@ViewBag.PageIndex</a> 
+						</li>
+
+						@if (ViewBag.PageIndex != ViewBag.PageEnd){int i =ViewBag.PageIndex+1;
+							<li class="page-item"><a class="page-link" href="/nguoidungadmin/danhsach?Pageindex=@i&sort=@ViewBag.sort&search=@ViewBag.search&role=@ViewBag.role"> @i</a></li>
+						}
+						
+						@if (ViewBag.PageIndex <= ViewBag.PageEnd-1){
+							<li class="page-item">
+								<a class="page-link" href="/nguoidungadmin/danhsach?Pageindex=@ViewBag.PageEnd&sort=@ViewBag.sort&search=@ViewBag.search&role=@ViewBag.role">Cuối</a>
+							</li>
+						}
+						}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
