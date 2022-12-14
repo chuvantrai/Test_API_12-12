@@ -321,3 +321,7 @@ C:\Users\Admin\Desktop\pCty\Test_API_12-12\Project\obj\Debug\net5.0\refint\Proje
 C:\Users\Admin\Desktop\pCty\Test_API_12-12\Project\obj\Debug\net5.0\Project.pdb
 C:\Users\Admin\Desktop\pCty\Test_API_12-12\Project\obj\Debug\net5.0\Project.genruntimeconfig.cache
 C:\Users\Admin\Desktop\pCty\Test_API_12-12\Project\obj\Debug\net5.0\ref\Project.dll
+C:\Users\Admin\Desktop\pCty\Test_API_12-12\Project\bin\Debug\net5.0\FluentValidation.dll
+C:\Users\Admin\Desktop\pCty\Test_API_12-12\Project\bin\Debug\net5.0\FluentValidation.AspNetCore.dll
+C:\Users\Admin\Desktop\pCty\Test_API_12-12\Project\bin\Debug\net5.0\FluentValidation.DependencyInjectionExtensions.dll
+C:\Users\Admin\Desktop\pCty\Test_API_12-12\Project\obj\Debug\net5.0\Project.MvcApplicationPartsAssemblyInfo.cs

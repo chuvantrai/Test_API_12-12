@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 using Project.Models;
 using System;
 using System.Collections.Generic;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Project.Application.Responses;
 
 namespace Project.Controllers
 {
@@ -93,6 +96,21 @@ namespace Project.Controllers
                 }
             }
             return false;
+        }
+    }
+    
+    [ApiController]
+    public class TestAPIController : Controller
+    {
+        private IMediator _mediator;
+        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetRequiredService<IMediator>();
+
+        [NonAction]
+        protected virtual ObjectResult Ok<T>(T value) where T : TestAPIResponse
+        {
+            return value.Status == 204
+                ? StatusCode(204, null)
+                : StatusCode((int) value?.Status, value);
         }
     }
 }

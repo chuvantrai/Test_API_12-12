@@ -4,17 +4,20 @@ using Project.Models;
 
 namespace Project.Application.Responses
 {
-    public class ProductResponse
+    public class ProductResponse : APIResponse
     {
         public Product Data { get; set; } = default!;
-        public string Status { get; set; } = "failed";
-        public string Message { get; set; } = "none";
     }
     
-    public class ListProductResponse
+    public class APIResponse
     {
-        public List<Product> Data { get; set; } = default!;
-        public string Status { get; set; } = "failed";
-        public string Message { get; set; } = "none";
+        public int Status { get; set; } = 400;
+        public bool Success { get; set; } = false;
+        public string Message { get; set; } = default!;
+    }
+    
+    public class ListProductsResponse : APIResponse
+    {
+        public List<Product> Data { get; set; } = null;
     }
 }
