@@ -50,6 +50,15 @@ namespace Project.Controllers
                 return new JsonResult(productResponse);
             }
 
+            var proSameTitle = context.Products.FirstOrDefault(x => x.ProductName.Equals(title));
+            
+            if (proSameTitle is null)
+            {
+                productResponse.Message = "Invalid Request! Title already exist";
+                productResponse.Status = 400;
+                return new JsonResult(productResponse);
+            }
+
             Product p = new Product()
             {
                 ProductName = title,
