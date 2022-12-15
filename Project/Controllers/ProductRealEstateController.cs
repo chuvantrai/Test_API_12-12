@@ -52,7 +52,7 @@ namespace Project.Controllers
 
             var proSameTitle = context.Products.FirstOrDefault(x => x.ProductName.Equals(title));
             
-            if (proSameTitle is null)
+            if (proSameTitle is not null)
             {
                 productResponse.Message = "Invalid Request! Title already exist";
                 productResponse.Status = 400;
