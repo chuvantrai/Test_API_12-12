@@ -46,7 +46,7 @@ namespace Project.Controllers
 
             if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(content) ||
                 category == 0 || regional == 0 || string.IsNullOrEmpty(letterPrice) ||
-                noPrice == 0 || area == 0 || horizontal == 0 || !Regex.IsMatch(letterPrice,checkCode))
+                noPrice < 0 || area < 0 || horizontal < 0 || !Regex.IsMatch(letterPrice,checkCode))
             {
                 productResponse.Message = "Invalid Request";
                 productResponse.Status = 400;
