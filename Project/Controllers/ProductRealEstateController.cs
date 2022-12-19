@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -41,9 +42,11 @@ namespace Project.Controllers
                 return new JsonResult(productResponse);
             }
 
+            var checkCode = "^(?!.*(!|@|#|\\$|%|\\^|&|\\*|\\(|\\)|,|\\.|\\?|\"|:|{|}|\\||<|>)).*$";
+
             if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(content) ||
                 category == 0 || regional == 0 || string.IsNullOrEmpty(letterPrice) ||
-                noPrice == 0 || area == 0 || horizontal == 0)
+                noPrice == 0 || area == 0 || horizontal == 0 || !Regex.IsMatch(letterPrice,checkCode))
             {
                 productResponse.Message = "Invalid Request";
                 productResponse.Status = 400;
@@ -151,7 +154,7 @@ namespace Project.Controllers
             var p = context.Products.FirstOrDefault(x => x.ProductId == id);
             
             if (id == 0 || p is null || string.IsNullOrEmpty(title) || string.IsNullOrEmpty(content) || category == 0 ||
-            regional == 0|| noPrice == 0 || area == 0 || horizontal == 0 || img != null)
+            regional == 0|| noPrice < 0 || area < 0 || horizontal < 0 || img != null)
             {
                 productResponse.Message = "Invalid Request";
                 productResponse.Status = 400;
