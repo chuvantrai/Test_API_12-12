@@ -14,6 +14,7 @@ namespace Project.Controllers
     {
         public string RoleAdmin = @"eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM5YTJmZDA5LTJhNjktNDQ4Yy1hNWJiLTA4ZGEyMmIxYzFm"; 
         public string RoleUser = @"ImF1ZCI6Ik5vdmFuZXQifQsImlhdCI6MTYiOiJIUzUxMiIsInR5cC2ODc2NjM0MiwiaXNzIjoiTm92YW5ldCIs";
+        public string RoleUser2 = @"ImF1ZCI6Ik5vdmFuZXQifQsImlhdCI6MTYiOiJIUzUxMiIsInR5cC2ODc2NjM0MiwiaXNzIjoiTm92YW5ldCIs2";
 
         public User CheckRoleSession(int[] listrole,bool andor)// true: and, false: or
         {

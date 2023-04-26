@@ -20,4 +20,8 @@ namespace Project.Application.Responses
     {
         public List<Product> Data { get; set; } = null;
     }
+    public class NewsResponse : APIResponse
+    {
+        public News Data { get; set; } = null;
+    }
 }

@@ -44,11 +44,11 @@ namespace Project.Controllers
 
             var checkCode = "^(?!.*(!|@|#|\\$|%|\\^|&|\\*|\\(|\\)|,|\\.|\\?|\"|:|{|}|\\||<|>)).*$";
 
-            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(content) ||
-                category == 0 || regional == 0 || string.IsNullOrEmpty(letterPrice) ||
-                noPrice < 0 || area < 0 || horizontal < 0 || !Regex.IsMatch(letterPrice,checkCode))
+            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(content) || string.IsNullOrEmpty(letterPrice) ||
+                noPrice < 0 || area <= 0 || horizontal <= 0 || !Regex.IsMatch(letterPrice,checkCode) || img is null
+                ||title.Length>100 ||content.Length>1500||!(category>0&&category<5)||!(regional>0&&regional<8)||letterPrice[0]=='0'||area>999)
             {
-                productResponse.Message = "Invalid Request";
+                productResponse.Message = "Invalid request! Missing required field";
                 productResponse.Status = 400;
                 return new JsonResult(productResponse);
             }
@@ -113,7 +113,7 @@ namespace Project.Controllers
 
             if (id == 0)
             {
-                productResponse.Message = "Invalid Request";
+                productResponse.Message = "Invalid request! Missing required field";
                 productResponse.Status = 400;
                 return new JsonResult(productResponse);
             }
@@ -121,7 +121,7 @@ namespace Project.Controllers
             Product p = context.Products.FirstOrDefault(x => x.ProductId == id);
             if (p is null)
             {
-                productResponse.Message = "Invalid Request";
+                productResponse.Message = "Invalid request!";
                 productResponse.Status = 400;
                 return new JsonResult(productResponse);
             }
@@ -156,7 +156,7 @@ namespace Project.Controllers
             if (id == 0 || p is null || string.IsNullOrEmpty(title) || string.IsNullOrEmpty(content) || category == 0 ||
             regional == 0|| noPrice < 0 || area < 0 || horizontal < 0 || img != null)
             {
-                productResponse.Message = "Invalid Request";
+                productResponse.Message = "Invalid request! Missing required field";
                 productResponse.Status = 400;
                 return new JsonResult(productResponse);
             }

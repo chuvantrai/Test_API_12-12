@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Project.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Project.Application.Responses;
 
 namespace Project.Controllers
 {
@@ -13,31 +14,33 @@ namespace Project.Controllers
         {
             context = new Bds_CShapContext();
         }
-        public IActionResult Index(int id, string thongbao)
+        [HttpGet]
+        public IActionResult Index(int? id)
         {
-            if(id != 0 && id != null)
+            var productResponse = new NewsResponse();
+            if(id is not null)
             {
-                News news = context.News.FirstOrDefault(x => x.NewsId == id);
-                ViewBag.News = news;
-                List<News> list = context.News.Where(x=>x.NewsId!=id).Skip(0).Take(3).ToList();
-                ViewBag.ListNews = list;
-                return View("/Views/News/News.cshtml");
+                var news = context.News.FirstOrDefault(x => x.NewsId == id);
+                if (news is null)
+                {
+                    productResponse.Message = "Invalid request! Missing required field";
+                    productResponse.Status = 400;
+                    return new JsonResult(productResponse);
+                }
+                productResponse = new NewsResponse()
+                {
+                    Data = news,
+                    Status = 200,
+                    Success = true,
+                    Message = "Successfully!"
+                };
+                return new JsonResult(productResponse);
             }
             else
             {
-                List<News> NewsList = new List<News>();
-                NewsList = context.News.ToList();
-                int Pagesize = 5;
-                int Pageindex = 1;
-                List<News> NewsListPage = Logic.ExtensionPage.PagingNews(NewsList, Pageindex, Pagesize);
-                ViewBag.NewsList = NewsListPage;
-                ViewBag.PageIndex = Pageindex;
-                ViewBag.PageEnd = Logic.ExtensionPage.PageEnd(NewsList, Pagesize);
-                if (!string.IsNullOrEmpty(thongbao))
-                {
-                    ViewBag.thongbao = "Đã xóa thành công";
-                }
-                return View("/Views/News/NewsList.cshtml");
+                productResponse.Message = "Invalid request! Missing required field";
+                productResponse.Status = 400;
+                return new JsonResult(productResponse);
             }
         }
         public IActionResult Danhsach(int Pageindex,string search,string sort)
